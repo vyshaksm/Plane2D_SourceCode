@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1769944615249281193}
   - component: {fileID: 7642498381317747069}
   - component: {fileID: 7295537355287572341}
-  - component: {fileID: 1334834401541699672}
   - component: {fileID: -1168521668632737295}
+  - component: {fileID: 1347855652995804114}
   m_Layer: 0
   m_Name: star
   m_TagString: Untagged
@@ -122,19 +122,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.52
---- !u!114 &1334834401541699672
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 125373547899116904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2930357141adab4c8ea485d9fcfffa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collectSound: {fileID: 0}
 --- !u!50 &-1168521668632737295
 Rigidbody2D:
   serializedVersion: 4
@@ -162,3 +149,17 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &1347855652995804114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 125373547899116904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f62136acdd9071546959967fc78501df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: -1168521668632737295}
+  obj: {fileID: 11400000, guid: 84257956bce60ee4d90966be1f35e346, type: 2}

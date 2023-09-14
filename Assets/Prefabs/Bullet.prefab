@@ -187,4 +187,4 @@ MonoBehaviour:
   rb: {fileID: 5439993730226347830}
   disableTime: 2
   explossionPref: {fileID: 9127957378084520913, guid: 0728165e2494fe941bc4a94105df8f6d, type: 3}
-  distroySound: {fileID: 0}
+  obj: {fileID: 11400000, guid: 79325e0cc0a6e2a4ca9756012221a409, type: 2}

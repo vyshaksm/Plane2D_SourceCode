@@ -4,79 +4,96 @@ using UnityEngine;
 
 public class MissileSpawner : MonoBehaviour
 {
-    [SerializeField] private float spawnInterval; 
     [SerializeField] private float spawnDistance = 1f;
-    [SerializeField] private float speed=5f;
-    [SerializeField] private float maxSpeed=20f;
-    [SerializeField] private float accelaration=0.3f;
+    [SerializeField] private float[] spawnIntervals = { 1f, 2f, 5f, 7f };
+    [SerializeField] private float maxSpeed = 5f;
+    [SerializeField] private float acceleration = 0.01f;
 
-    private float nextSpawnTime;
-
+    private float[] nextSpawnTimes = new float[4];
     private Camera mainCamera;
-
+    private float currentGameSpeed;
+    private bool isBoostOn;
     private void Start()
     {
+       currentGameSpeed = 1 + Time.deltaTime ;
         mainCamera = Camera.main;
-        nextSpawnTime = Time.time;
+        ResetSpawnTimes();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-
-        if (Time.time >= nextSpawnTime)
+        for (int i = 0; i < nextSpawnTimes.Length; i++)
         {
-            SpawnObjecMissile();
-            SpawnObjectStar();
-            nextSpawnTime = Time.time + spawnInterval;
+            if (Time.time >= nextSpawnTimes[i])
+            {
+                SpawnObstacle(i);
+                nextSpawnTimes[i] = Time.time + spawnIntervals[i];
+
+
+                if (isBoostOn)
+                {
+                    Time.timeScale = currentGameSpeed+1.5f;
+                }
+                else
+                {
+                    Time.timeScale = currentGameSpeed;
+                }
+
+                if (Time.timeScale >= maxSpeed)
+                {
+                    Time.timeScale = maxSpeed;
+                }
+            }
         }
     }
 
-    private void SpawnObjecMissile()
+    private void ResetSpawnTimes()
+    {
+        for (int i = 0; i < nextSpawnTimes.Length; i++)
+        {
+            nextSpawnTimes[i] = Time.time + spawnIntervals[i];
+        }
+    }
+
+    private Vector3 SpawnObjPos()
     {
         Vector3 cameraPosition = mainCamera.transform.position;
         float cameraHeight = mainCamera.orthographicSize;
         float cameraWidth = cameraHeight * mainCamera.aspect;
 
         Vector3 spawnPosition = new Vector3(cameraPosition.x + cameraWidth + spawnDistance, Random.Range(cameraPosition.y - cameraHeight, cameraPosition.y + cameraHeight), 0f);
-
-        GameObject missiles = ObjectPooling.objectpoolInstance.poolObjectMissile();
-        missiles.SetActive(true);
-        missiles.GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, 0);
-        missiles.transform.position = spawnPosition;
-        missiles.transform.rotation = transform.rotation;
-
-        speed += accelaration ;
-        
-        if (speed >= maxSpeed)
-        {
-            speed = maxSpeed;
-            spawnInterval = 0.35f;
-        }
-        else if (speed > 10f)
-        {
-            spawnInterval = 0.45f;
-        }
+        return spawnPosition;
     }
-    private void SpawnObjectStar()
+
+    private void SpawnObstacle(int obstacleIndex)
     {
-        //GameObject star = ObjectPooling.objectpoolInstance.poolObjectsAsteroid();
-        //star.SetActive(true);
-        //star.GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, 0);
-        //star.transform.position = spawnPosition;
-        //star.transform.rotation = transform.rotation;
-
-        //speed += accelaration;
-
-        //if (speed >= maxSpeed)
-        //{
-        //    speed = maxSpeed;
-        //    spawnInterval = 0.35f;
-        //}
-        //else if (speed > 10f)
-        //{
-        //    spawnInterval = 0.45f;
-        //}
+        GameObject obstacle = ObjectPoolExample.instance.GetObject(obstacleIndex);
+        obstacle.SetActive(true);
+        obstacle.transform.position = SpawnObjPos();
     }
+
+    public void speedBoostOn()
+    {
+        currentGameSpeed = Time.timeScale;
+        isBoostOn = true;
+    }
+
+    public void speedBoostOff()
+    {
+        isBoostOn = false;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.onSpeedBoostOn += speedBoostOn;
+        EventManager.onSpeedBoostOff += speedBoostOff;
+    }
+    private void OnDisable()
+    {
+        EventManager.onSpeedBoostOn -= speedBoostOn;
+        EventManager.onSpeedBoostOff -= speedBoostOff;
+    }
+
 }
 
 

@@ -19,9 +19,15 @@ public class PlaneController : MonoBehaviour
     [SerializeField]private float shotCooldown = 1f;
     [SerializeField] private float turnAngle;
     [SerializeField] private float trunSpeed;
+    [SerializeField] private AudioSource explodeAudio;
+    [SerializeField] private float disableTime;
+    [SerializeField] private GameObject explossionPref;
     private float lastShotTime = 0f;
     private bool activeShield;
+    private int boostCount=0;
 
+
+    [SerializeField] private BG_Scroller scroller;
     private void Awake()
     {
         inputs = new PlayerInput();
@@ -52,9 +58,32 @@ public class PlaneController : MonoBehaviour
             activeShield = true;
             sheildOnSound.Play();
             powerSheildPref.SetActive(true);
-            EventManager.onPowerUP?.Invoke(activeShield);
             StartCoroutine(DeactivateShieldPowerUp());
             collision.gameObject.SetActive(false);
+        }
+
+        if (collision.CompareTag("Missile"))
+        {
+            if (activeShield)
+            {
+                return;
+            }
+            GetComponent<SpriteRenderer>().enabled = false;
+            GameObject explosion = Instantiate(explossionPref, transform.position, Quaternion.identity);
+            Destroy(explosion, 0.5f);
+            StartCoroutine(GameEndDelay());
+        }
+
+
+        if (collision.CompareTag("Speed"))
+        {
+            if (boostCount > 0)
+            {
+                return;
+            }
+            EventManager.onSpeedBoostOn?.Invoke();
+            boostCount++;
+            StartCoroutine(DeactivateBoost());
         }
     }
 
@@ -62,8 +91,21 @@ public class PlaneController : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
         activeShield = false;
-        EventManager.onPowerUP?.Invoke(activeShield);
         powerSheildPref.SetActive(false);
+    }
+
+    private IEnumerator GameEndDelay()
+    {
+        explodeAudio.Play();
+        yield return new WaitForSeconds(0.5f);
+        EventManager.onGameOver?.Invoke();
+    }
+
+    public IEnumerator DeactivateBoost()
+    {
+        yield return new WaitForSeconds(10f);
+        boostCount = 0;
+        EventManager.onSpeedBoostOff?.Invoke();
     }
 
     private void moveUP_and_DOWN(float inputValue)
@@ -96,7 +138,7 @@ public class PlaneController : MonoBehaviour
         {
             fireSound.Play();
             anim.SetBool("Shoot1", true);
-            GameObject bullet= ObjectPooling.objectpoolInstance.poolObjectsBullet();
+            GameObject bullet = ObjectPoolExample.instance.GetObject(4);
             bullet.SetActive(true);
             bullet.transform.rotation = transform.rotation;
             bullet.transform.position = bulletStartPos.position;

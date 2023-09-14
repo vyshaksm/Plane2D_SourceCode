@@ -8,4 +8,6 @@ public class EventManager : MonoBehaviour
     public static Action<bool> onPowerUP;
     public static Action<int> onStarCollect;
     public static Action onGameOver;
+    public static Action onSpeedBoostOn;
+    public static Action onSpeedBoostOff;
 }

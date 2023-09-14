@@ -67,7 +67,10 @@ public class GameUI : MonoBehaviour
             hScore=starCount;
             PlayerPrefs.SetInt("HScore", hScore);
         }
-       
+        if (count <= 0)
+        {
+            return;
+        }
         GameObject point = Instantiate(pontPopUP_Pref,popupParent);
         point.GetComponent<TextMeshProUGUI>().text = $"+{count.ToString("00")}";
         Destroy(point, 0.75f);

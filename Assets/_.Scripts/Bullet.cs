@@ -8,7 +8,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float disableTime;
     [SerializeField] private GameObject explossionPref;
+    [SerializeField] private Obstacles obj;
+    private int starCount;
 
+    private void Start()
+    {
+        starCount = obj.point;
+    }
     private void FixedUpdate()
     {
         rb.velocity = new Vector2(speed * Time.deltaTime, 0);
@@ -19,7 +25,9 @@ public class Bullet : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Missile"))
         {
+            EventManager.onStarCollect?.Invoke(starCount);
             gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
             GameObject explosion = Instantiate(explossionPref, collision.transform.position, Quaternion.identity);
             Destroy(explosion, 0.75f);
         }

@@ -2,12 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Star : MonoBehaviour
+public class MoveObstacles : MonoBehaviour
 {
-    private const int starCount= 10;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Obstacles obj;
+    private int starCount;
+    private float speed;
 
+    private void Awake()
+    {
+        speed = obj.speed;
+        starCount = obj.point;
+    }
     private void FixedUpdate()
     {
+        rb.velocity = new Vector2(-speed, 0);
         StartCoroutine(disableDelay());
     }
 
@@ -20,7 +29,7 @@ public class Star : MonoBehaviour
         }
     }
 
-    private  IEnumerator disableDelay()
+    private IEnumerator disableDelay()
     {
         yield return new WaitForSeconds(5f);
         gameObject.SetActive(false);
