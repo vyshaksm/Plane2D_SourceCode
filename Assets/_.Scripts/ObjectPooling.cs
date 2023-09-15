@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPoolExample : MonoBehaviour
+public class ObjectPooling : MonoBehaviour
 {
     [SerializeField] private List<GameObject> objectPrefabs;
     [SerializeField] private int objectCount;
@@ -10,7 +10,7 @@ public class ObjectPoolExample : MonoBehaviour
 
     private List<List<GameObject>> objectPools;
 
-    public static ObjectPoolExample instance;
+    public static ObjectPooling instance;
 
     private void Start()
     {
@@ -37,11 +37,6 @@ public class ObjectPoolExample : MonoBehaviour
 
     public  GameObject GetObject(int objectType)
     {
-        //if (instance == null || instance.objectPools == null || objectType < 0 || objectType >= instance.objectPools.Count)
-        //{
-        //    Debug.LogError("Object pool or object type not found.");
-        //    return null;
-        //}
 
         List<GameObject> objectPool = instance.objectPools[objectType];
 
@@ -49,16 +44,9 @@ public class ObjectPoolExample : MonoBehaviour
         {
             if (!objectPool[i].activeInHierarchy)
             {
-                //objectPool[i].SetActive(true);
                 return objectPool[i];
             }
         }
-
-        //// If all objects in the pool are in use, create a new one and add it to the pool
-        //GameObject newObj = Instantiate(instance.objectPrefabs[objectType], instance.objectParents[objectType]);
-        //newObj.SetActive(false);
-        //objectPool.Add(newObj);
-        //return newObj;
         return null;
     }
 }

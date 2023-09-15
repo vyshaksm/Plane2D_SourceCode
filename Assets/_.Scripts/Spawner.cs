@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MissileSpawner : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [SerializeField] private float spawnDistance = 1f;
     [SerializeField] private float[] spawnIntervals = { 1f, 2f, 5f, 7f };
@@ -11,17 +11,19 @@ public class MissileSpawner : MonoBehaviour
 
     private float[] nextSpawnTimes = new float[4];
     private Camera mainCamera;
-    private float currentGameSpeed;
+    private float currentGameSpeed=1;
     private bool isBoostOn;
     private void Start()
     {
-       currentGameSpeed = 1 + Time.deltaTime ;
         mainCamera = Camera.main;
         ResetSpawnTimes();
     }
 
     private void Update()
     {
+        currentGameSpeed += 0.01f * Time.deltaTime;
+        
+
         for (int i = 0; i < nextSpawnTimes.Length; i++)
         {
             if (Time.time >= nextSpawnTimes[i])
@@ -67,7 +69,7 @@ public class MissileSpawner : MonoBehaviour
 
     private void SpawnObstacle(int obstacleIndex)
     {
-        GameObject obstacle = ObjectPoolExample.instance.GetObject(obstacleIndex);
+        GameObject obstacle = ObjectPooling.instance.GetObject(obstacleIndex);
         obstacle.SetActive(true);
         obstacle.transform.position = SpawnObjPos();
     }

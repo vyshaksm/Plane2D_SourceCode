@@ -138,7 +138,7 @@ public class PlaneController : MonoBehaviour
         {
             fireSound.Play();
             anim.SetBool("Shoot1", true);
-            GameObject bullet = ObjectPoolExample.instance.GetObject(4);
+            GameObject bullet = ObjectPooling.instance.GetObject(4);
             bullet.SetActive(true);
             bullet.transform.rotation = transform.rotation;
             bullet.transform.position = bulletStartPos.position;
